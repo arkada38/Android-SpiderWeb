@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/action_achievements"
+        android:id="@+id/achievements"
+        android:icon="@drawable/achievements"
+        app:showAsAction="ifRoom"
+        tools:ignore="AppCompatResource" />
+    <item android:title="@string/action_leaderboard"
+        android:id="@+id/leaderboard"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/leaderboard"
+        tools:ignore="AppCompatResource" />
+    <item android:title="@string/action_about"
+        android:id="@+id/about"
+        android:icon="@drawable/about"
+        app:showAsAction="ifRoom"
+        tools:ignore="AppCompatResource" />
+</menu>
