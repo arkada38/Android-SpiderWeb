@@ -2,6 +2,7 @@ package ru.arkada38.SpiderWeb;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +13,7 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -84,6 +86,10 @@ public class DrawView extends View {
         this.numberOfLvl = numberOfLvl;
 
         View canvas = lvlActivity.findViewById(R.id.canvas);
+
+        // Загрузка масштаба из настроек
+        sPref = lvlActivity.getPreferences(MODE_PRIVATE);
+        scale = sPref.getString(SCALE, "").equals("") ? 0 : Float.parseFloat(sPref.getString(SCALE, ""));
 
         width = canvas.getWidth();
         height = canvas.getHeight();
@@ -377,17 +383,17 @@ public class DrawView extends View {
 
         // Если пройден не последний уровень
         if (numberOfLvl < LvlKeeper.getNumberOfLvls() - 1) {
-            builder.setTitle(getResources().getString(ru.arkada38.SpiderWeb.R.string.Congratulations))// Заголовок
-                    .setMessage(getResources().getString(ru.arkada38.SpiderWeb.R.string.Complete1) + " " + (numberOfLvl + 1) + " " + getResources().getString(ru.arkada38.SpiderWeb.R.string.Complete2))// Описание
+            builder.setTitle(getResources().getString(R.string.Congratulations))// Заголовок
+                    .setMessage(getResources().getString(ru.arkada38.SpiderWeb.R.string.Complete1) + " " + (numberOfLvl + 1) + " " + getResources().getString(R.string.Complete2))// Описание
                     .setCancelable(false)
-                    .setNeutralButton(getResources().getString(ru.arkada38.SpiderWeb.R.string.action_restart),
+                    .setNeutralButton(getResources().getString(R.string.action_restart),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
                                     loadLvl(numberOfLvl);
                                 }
                             })
-                    .setPositiveButton(getResources().getString(ru.arkada38.SpiderWeb.R.string.NextLvl),
+                    .setPositiveButton(getResources().getString(R.string.NextLvl),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
@@ -429,6 +435,14 @@ public class DrawView extends View {
                                     SharedPreferences.Editor ed = sPref.edit();
                                     ed.putString(LAST_LVL, Integer.toString(numberOfLvl));
                                     ed.apply();
+                                }
+                            })
+                    .setPositiveButton(getResources().getString(R.string.liveFeedback),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    Intent browse = new Intent(Intent.ACTION_VIEW , Uri.parse("https://play.google.com/store/apps/details?id=ru.arkada38.SpiderWeb"));
+                                    lvlActivity.startActivity(browse);
                                 }
                             })
             ;
