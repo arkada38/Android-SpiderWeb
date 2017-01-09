@@ -161,7 +161,7 @@ public class DrawView extends View {
         // Рисуем выделитель
         for (int i = 0; i < ourSpiders2.length; i++)
             if (ourSpiders2[i])
-                canvas.drawCircle(spiders[i * 2], spiders[i * 2 + 1], 150, c);
+                canvas.drawCircle(spiders[i * 2], spiders[i * 2 + 1], (float) (bitmap1.getWidth() / 2 * 1.1), c);
 
         // endregion
 
