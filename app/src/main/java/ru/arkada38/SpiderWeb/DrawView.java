@@ -21,13 +21,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 import static android.content.Context.MODE_PRIVATE;
+import static ru.arkada38.SpiderWeb.Settings.MAX_LVL;
+import static ru.arkada38.SpiderWeb.Settings.SCALE;
+import static ru.arkada38.SpiderWeb.Settings.TAG;
+import static ru.arkada38.SpiderWeb.Settings.sPref;
 
 public class DrawView extends View {
 
-    static final String TAG = MainActivity.TAG;
     enum Resize { INCREASE, DECREASE }
 
     private float width = 0; // Ширина игрового поля
@@ -39,13 +40,8 @@ public class DrawView extends View {
     private boolean isPointerActive = false; // Есть ли касание паучка у указателя
 
     private int numberOfLvl; // Номер текущего уровня
-    private int MaxLvl = 0; // Максимальный пройденный уровень игроком
+    private int maxLvl = 0; // Максимальный пройденный уровень игроком
     private float scale = 1; // Размер паучков
-
-    SharedPreferences sPref;
-    final String LAST_LVL = "lastLvl"; // Последний пройденный уровень игроком
-    final String MAX_LVL = "MaxLvl"; // Максимальный пройденный уровень игроком
-    final String SCALE = "1"; // Размер паучков
 
     LvlActivity lvlActivity;
     Paint p, t, c;
@@ -87,9 +83,12 @@ public class DrawView extends View {
 
         View canvas = lvlActivity.findViewById(R.id.canvas);
 
-        // Загрузка масштаба из настроек
-        sPref = lvlActivity.getPreferences(MODE_PRIVATE);
-        scale = sPref.getString(SCALE, "").equals("") ? 0 : Float.parseFloat(sPref.getString(SCALE, ""));
+        //TODO Определение типа данных в прошлой версии (написать конвертер для обновления на новую версию)
+        // Загрузка масштаба и максисального уровня из настроек
+        scale = sPref.getFloat(SCALE, 1);
+        maxLvl = sPref.getInt(MAX_LVL, 0);
+
+        Log.d(TAG, "DrawView " + sPref.getInt(MAX_LVL, 0));
 
         width = canvas.getWidth();
         height = canvas.getHeight();
@@ -365,16 +364,16 @@ public class DrawView extends View {
         matrix.reset();
         matrix.setScale(scale, scale);
 
-        bitmap1 = Bitmap.createBitmap(bitmapSource, 0, 0, bitmapSource.getWidth()/2, bitmapSource.getHeight()/2, matrix, true);
-        bitmap2 = Bitmap.createBitmap(bitmapSource, bitmapSource.getWidth()/2, 0, bitmapSource.getWidth()/2, bitmapSource.getHeight()/2, matrix, true);
-        bitmap3 = Bitmap.createBitmap(bitmapSource, 0, bitmapSource.getHeight()/2, bitmapSource.getWidth()/2, bitmapSource.getHeight()/2, matrix, true);
-        bitmap4 = Bitmap.createBitmap(bitmapSource, bitmapSource.getWidth()/2, bitmapSource.getHeight()/2, bitmapSource.getWidth()/2, bitmapSource.getHeight()/2, matrix, true);
+        bitmap1 = Bitmap.createBitmap(bitmapSource, 0, 0, bitmapSource.getWidth() / 2, bitmapSource.getHeight() / 2, matrix, true);
+        bitmap2 = Bitmap.createBitmap(bitmapSource, bitmapSource.getWidth() / 2, 0, bitmapSource.getWidth() / 2, bitmapSource.getHeight()/2, matrix, true);
+        bitmap3 = Bitmap.createBitmap(bitmapSource, 0, bitmapSource.getHeight() / 2, bitmapSource.getWidth() / 2, bitmapSource.getHeight()/2, matrix, true);
+        bitmap4 = Bitmap.createBitmap(bitmapSource, bitmapSource.getWidth() / 2, bitmapSource.getHeight() / 2, bitmapSource.getWidth()/2, bitmapSource.getHeight() / 2, matrix, true);
 
         invalidate();
 
         sPref = lvlActivity.getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed = sPref.edit();
-        ed.putString(SCALE, Float.toString(scale));
+        ed.putFloat(SCALE, scale);
         ed.apply();
     }
 
@@ -390,6 +389,15 @@ public class DrawView extends View {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
+                                    maxLvl = Math.max(numberOfLvl, maxLvl);
+                                    // TODO submitLvl
+//                                            submitLvl();
+
+                                    SharedPreferences.Editor ed = sPref.edit();
+                                    ed.putInt(MAX_LVL, maxLvl);
+                                    ed.apply();
+
+
                                     loadLvl(numberOfLvl);
                                 }
                             })
@@ -397,19 +405,16 @@ public class DrawView extends View {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
-                                    if (numberOfLvl < LvlKeeper.getNumberOfLvls()) {
-                                        numberOfLvl++;
-                                        MaxLvl = Math.max(numberOfLvl, MaxLvl);
-                                        // TODO submitLvl
+                                    maxLvl = Math.max(numberOfLvl, maxLvl);
+                                    numberOfLvl++;
+                                    // TODO submitLvl
 //                                            submitLvl();
-                                        loadLvl(numberOfLvl);
 
-                                        sPref = lvlActivity.getPreferences(MODE_PRIVATE);
-                                        SharedPreferences.Editor ed = sPref.edit();
-                                        ed.putString(LAST_LVL, Integer.toString(numberOfLvl));
-                                        ed.putString(MAX_LVL, Integer.toString(MaxLvl));
-                                        ed.apply();
-                                    }
+                                    SharedPreferences.Editor ed = sPref.edit();
+                                    ed.putInt(MAX_LVL, maxLvl);
+                                    ed.apply();
+
+                                    loadLvl(numberOfLvl);
                                 }
                             })
             ;
@@ -424,17 +429,16 @@ public class DrawView extends View {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
-                                    MaxLvl = LvlKeeper.getNumberOfLvls();
+                                    maxLvl = LvlKeeper.getNumberOfLvls();
                                     // TODO submitLvl
 //                                        submitLvl();
 
+                                    SharedPreferences.Editor ed = sPref.edit();
+                                    ed.putInt(Settings.MAX_LVL, LvlKeeper.getNumberOfLvls());
+                                    ed.apply();
+
                                     numberOfLvl = 0;
                                     loadLvl(numberOfLvl);
-
-                                    sPref = lvlActivity.getPreferences(MODE_PRIVATE);
-                                    SharedPreferences.Editor ed = sPref.edit();
-                                    ed.putString(LAST_LVL, Integer.toString(numberOfLvl));
-                                    ed.apply();
                                 }
                             })
                     .setPositiveButton(getResources().getString(R.string.liveFeedback),
@@ -443,6 +447,13 @@ public class DrawView extends View {
                                     dialog.cancel();
                                     Intent browse = new Intent(Intent.ACTION_VIEW , Uri.parse("https://play.google.com/store/apps/details?id=ru.arkada38.SpiderWeb"));
                                     lvlActivity.startActivity(browse);
+
+                                    SharedPreferences.Editor ed = sPref.edit();
+                                    ed.putInt(Settings.MAX_LVL, LvlKeeper.getNumberOfLvls());
+                                    ed.apply();
+
+                                    numberOfLvl = 0;
+                                    loadLvl(numberOfLvl);
                                 }
                             })
             ;

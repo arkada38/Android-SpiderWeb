@@ -3,6 +3,7 @@ package ru.arkada38.SpiderWeb;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewTreeObserver;
@@ -12,6 +13,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.util.Random;
+
+import static ru.arkada38.SpiderWeb.Settings.NUMBER_OF_LVL;
+import static ru.arkada38.SpiderWeb.Settings.TAG;
 
 public class LvlActivity extends AppCompatActivity {
 
@@ -45,7 +49,7 @@ public class LvlActivity extends AppCompatActivity {
 
         // Получаем номер уровня, который нужно загрузить
         Intent intent = getIntent();
-        numberOfLvl = intent.getIntExtra(MainActivity.NUMBER_OF_LVL, 0);
+        numberOfLvl = intent.getIntExtra(NUMBER_OF_LVL, 0);
 
         layout = (LinearLayout) findViewById(R.id.canvas);
 

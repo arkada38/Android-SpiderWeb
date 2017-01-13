@@ -1,9 +1,9 @@
 package ru.arkada38.SpiderWeb;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,19 +11,24 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import static ru.arkada38.SpiderWeb.Settings.MAX_LVL;
+import static ru.arkada38.SpiderWeb.Settings.NUMBER_OF_LVL;
+import static ru.arkada38.SpiderWeb.Settings.sPref;
 
-    public final static String NUMBER_OF_LVL = "ru.arkada38.SpiderWeb.NumberOfLvl";
-    static final String TAG = "SpiderWeb";
+public class MainActivity extends AppCompatActivity {
 
     GridView mainGridView;
     LvlAdapter lvlAdapter;
     Intent intent;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        context = this;
+        Settings.sPref = getPreferences(Context.MODE_PRIVATE);
 
         LvlKeeper.initLvls();
 
@@ -35,12 +40,23 @@ public class MainActivity extends AppCompatActivity {
         mainGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d(TAG, String.valueOf(i));
-
-                intent.putExtra(NUMBER_OF_LVL, i);
-                startActivity(intent);
+                // Можно проходить пройденные уровни и ближайщий непройденный уровень
+                if (i <= sPref.getInt(MAX_LVL, 0) + 1) {
+                    intent.putExtra(NUMBER_OF_LVL, i);
+                    startActivity(intent);
+                }
+                else
+                    Toast.makeText(context, R.string.on_enter_to_close_lvl, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        // При возвращении на главную страницу после прохождения уровней,
+        // игрок должен увидеть изменения
+        lvlAdapter.notifyDataSetChanged();
+        super.onResume();
     }
 
     //region Menu
