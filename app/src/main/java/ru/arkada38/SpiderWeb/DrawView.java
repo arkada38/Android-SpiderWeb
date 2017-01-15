@@ -379,8 +379,7 @@ public class DrawView extends View {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
                                     maxLvl = Math.max(numberOfLvl, maxLvl);
-                                    // TODO submitLvl
-//                                            submitLvl();
+                                    MainActivity.submitLvl();
 
                                     Settings.setMaxLvl(maxLvl);
 
@@ -394,8 +393,7 @@ public class DrawView extends View {
                                     dialog.cancel();
                                     maxLvl = Math.max(numberOfLvl, maxLvl);
                                     numberOfLvl++;
-                                    // TODO submitLvl
-//                                            submitLvl();
+                                    MainActivity.submitLvl();
 
                                     Settings.setMaxLvl(maxLvl);
 
@@ -415,8 +413,7 @@ public class DrawView extends View {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
                                     maxLvl = LvlKeeper.getNumberOfLvls();
-                                    // TODO submitLvl
-//                                        submitLvl();
+                                    MainActivity.submitLvl();
 
                                     Settings.setMaxLvl(LvlKeeper.getNumberOfLvls());
 

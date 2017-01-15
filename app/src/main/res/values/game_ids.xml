@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_id" translatable="false">797798802632</string>
+    <string name="achievement_origin" translatable="false">CgkIyMmOhJwXEAIQAg</string>
+    <string name="achievement_get_ones_hand_in" translatable="false">CgkIyMmOhJwXEAIQAQ</string>
+    <string name="achievement_experienced" translatable="false">CgkIyMmOhJwXEAIQBA</string>
+    <string name="achievement_master" translatable="false">CgkIyMmOhJwXEAIQBQ</string>
+    <string name="achievement_the_game_passed" translatable="false">CgkIyMmOhJwXEAIQAw</string>
+    <string name="leaderboard_max_lvl" translatable="false">CgkIyMmOhJwXEAIQBg</string>
+    <string name="leaderboard_steps" translatable="false">CgkIyMmOhJwXEAIQBw</string>
+</resources>
