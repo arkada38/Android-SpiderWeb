@@ -3,7 +3,6 @@ package ru.arkada38.SpiderWeb;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -21,11 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import static android.content.Context.MODE_PRIVATE;
-import static ru.arkada38.SpiderWeb.Settings.MAX_LVL;
-import static ru.arkada38.SpiderWeb.Settings.SCALE;
 import static ru.arkada38.SpiderWeb.Settings.TAG;
-import static ru.arkada38.SpiderWeb.Settings.sPref;
 
 public class DrawView extends View {
 
@@ -83,12 +78,9 @@ public class DrawView extends View {
 
         View canvas = lvlActivity.findViewById(R.id.canvas);
 
-        //TODO Определение типа данных в прошлой версии (написать конвертер для обновления на новую версию)
         // Загрузка масштаба и максисального уровня из настроек
-        scale = sPref.getFloat(SCALE, 1);
-        maxLvl = sPref.getInt(MAX_LVL, 0);
-
-        Log.d(TAG, "DrawView " + sPref.getInt(MAX_LVL, 0));
+        scale = Settings.getScale();
+        maxLvl = Settings.getMaxLvl();
 
         width = canvas.getWidth();
         height = canvas.getHeight();
@@ -207,7 +199,7 @@ public class DrawView extends View {
             if (webType[i / 2] == 0)
                 p.setARGB(155, 88, 88, 88);
             else
-                p.setARGB(255, 88, 0, 0);
+                p.setARGB(255, 170, 0, 26);
 
             canvas.drawLine(
                     spiders[web[i] * 2], spiders[web[i] * 2 + 1], // От первого паучка
@@ -371,10 +363,7 @@ public class DrawView extends View {
 
         invalidate();
 
-        sPref = lvlActivity.getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor ed = sPref.edit();
-        ed.putFloat(SCALE, scale);
-        ed.apply();
+        Settings.setScale(scale);
     }
 
     public void onLvlComplete() {
@@ -393,9 +382,7 @@ public class DrawView extends View {
                                     // TODO submitLvl
 //                                            submitLvl();
 
-                                    SharedPreferences.Editor ed = sPref.edit();
-                                    ed.putInt(MAX_LVL, maxLvl);
-                                    ed.apply();
+                                    Settings.setMaxLvl(maxLvl);
 
 
                                     loadLvl(numberOfLvl);
@@ -410,9 +397,7 @@ public class DrawView extends View {
                                     // TODO submitLvl
 //                                            submitLvl();
 
-                                    SharedPreferences.Editor ed = sPref.edit();
-                                    ed.putInt(MAX_LVL, maxLvl);
-                                    ed.apply();
+                                    Settings.setMaxLvl(maxLvl);
 
                                     loadLvl(numberOfLvl);
                                 }
@@ -433,9 +418,7 @@ public class DrawView extends View {
                                     // TODO submitLvl
 //                                        submitLvl();
 
-                                    SharedPreferences.Editor ed = sPref.edit();
-                                    ed.putInt(Settings.MAX_LVL, LvlKeeper.getNumberOfLvls());
-                                    ed.apply();
+                                    Settings.setMaxLvl(LvlKeeper.getNumberOfLvls());
 
                                     numberOfLvl = 0;
                                     loadLvl(numberOfLvl);
@@ -448,9 +431,7 @@ public class DrawView extends View {
                                     Intent browse = new Intent(Intent.ACTION_VIEW , Uri.parse("https://play.google.com/store/apps/details?id=ru.arkada38.SpiderWeb"));
                                     lvlActivity.startActivity(browse);
 
-                                    SharedPreferences.Editor ed = sPref.edit();
-                                    ed.putInt(Settings.MAX_LVL, LvlKeeper.getNumberOfLvls());
-                                    ed.apply();
+                                    Settings.setMaxLvl(LvlKeeper.getNumberOfLvls());
 
                                     numberOfLvl = 0;
                                     loadLvl(numberOfLvl);

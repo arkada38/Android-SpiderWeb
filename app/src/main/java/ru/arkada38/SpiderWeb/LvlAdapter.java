@@ -1,7 +1,6 @@
 package ru.arkada38.SpiderWeb;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.List;
-
-import static ru.arkada38.SpiderWeb.Settings.MAX_LVL;
-import static ru.arkada38.SpiderWeb.Settings.TAG;
-import static ru.arkada38.SpiderWeb.Settings.sPref;
 
 public class LvlAdapter extends BaseAdapter {
 
@@ -22,8 +17,6 @@ public class LvlAdapter extends BaseAdapter {
     public LvlAdapter(Context context, List<LvlItem> lvlItems) {
         this.context = context;
         this.lvlItems = lvlItems;
-
-        Log.d(TAG, "LvlAdapter " + sPref.getInt(MAX_LVL, 0));
     }
 
     @Override
@@ -33,12 +26,12 @@ public class LvlAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return lvlItems.get(position);
     }
 
     @Override
@@ -59,8 +52,7 @@ public class LvlAdapter extends BaseAdapter {
         numberOfSpiders.setText(String.valueOf(lvlItem.getNumberOfSpiders()));
         numberOfConnections.setText(String.valueOf(lvlItem.getNumbersOfConnections()));
 
-        // TODO MaxLvl Visibility and rename fields (string to float error)
-        int maxLvl = sPref.getInt(MAX_LVL, 0);
+        int maxLvl = Settings.getMaxLvl();
         if (position <= maxLvl && maxLvl > 0)
             isLvlDone.setVisibility(View.VISIBLE);
         else

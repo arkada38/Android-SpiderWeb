@@ -11,9 +11,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import static ru.arkada38.SpiderWeb.Settings.MAX_LVL;
 import static ru.arkada38.SpiderWeb.Settings.NUMBER_OF_LVL;
-import static ru.arkada38.SpiderWeb.Settings.sPref;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 // Можно проходить пройденные уровни и ближайщий непройденный уровень
-                if (i <= sPref.getInt(MAX_LVL, 0) + 1) {
+                if (i <= Settings.getMaxLvl() + 1) {
                     intent.putExtra(NUMBER_OF_LVL, i);
                     startActivity(intent);
                 }
